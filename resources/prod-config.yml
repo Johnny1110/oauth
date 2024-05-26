@@ -1,0 +1,15 @@
+port: 8080
+
+db:
+  connection-string: basemall?parseTime=true&charset=utf8mb4,utf8
+  ip: 45.32.108.38
+  port: 3306
+  username: root
+  password: Dev127336
+  max-connection: 10
+  max-idle-connection: 5
+  max-connection-lifetime: 3 # mins
+
+redis:
+  ip: 127.0.0.1
+  port: 6379
