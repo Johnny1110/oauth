@@ -6,6 +6,8 @@ import (
 	"oauth/respMsg"
 	"oauth/route"
 	"oauth/sys"
+	"oauth/utils"
+	"strings"
 	"time"
 )
 
@@ -30,9 +32,23 @@ func AuthenticationMiddleware(next http.Handler) http.Handler {
 				if route.NeedAuth {
 					auth := r.Header.Get("Authorization")
 					sys.Logger().Debugf("auth checking %s %s auth-contect: [%s]", httpMethod, url, auth)
-
-					if auth != "Bearer valid-token" {
+					if auth == "" || !strings.HasPrefix(auth, "Bearer ") {
 						sys.Logger().Warningf("auth failed: %s %s", httpMethod, url)
+						controller.HandleError(w, respMsg.UNAUTHORIZED, nil)
+						return
+					}
+
+					authToken := strings.TrimPrefix(auth, "Bearer ")
+					// Implement token validation and role/scope checking here
+					userRoles, userScopes, err := utils.ValidateToken(authToken)
+
+					if err != nil {
+						sys.Logger().Warningf("auth failed: %s %s - invalid token", httpMethod, url)
+						controller.HandleError(w, respMsg.UNAUTHORIZED, nil)
+						return
+					}
+					if !utils.HasRequiredPermissions(userRoles, route.Permission.Roles, userScopes, route.Permission.Scopes) {
+						sys.Logger().Warningf("auth failed: %s %s - insufficient permissions", httpMethod, url)
 						controller.HandleError(w, respMsg.UNAUTHORIZED, nil)
 						return
 					}

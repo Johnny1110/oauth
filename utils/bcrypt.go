@@ -5,7 +5,7 @@ import (
 	"oauth/sys"
 )
 
-func checkPassword(plaintext string, hashedPassword string) bool {
+func CheckPassword(plaintext string, hashedPassword string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(plaintext))
 	if err != nil {
 		sys.Logger().Warning("Password does not match:", err)

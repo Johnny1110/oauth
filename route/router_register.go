@@ -10,6 +10,12 @@ type Route struct {
 	Pattern     string
 	HandlerFunc http.HandlerFunc
 	NeedAuth    bool
+	Permission  AuthPermission
+}
+
+type AuthPermission struct {
+	Roles  []string
+	Scopes []string
 }
 
 var Routes = []Route{
@@ -25,5 +31,16 @@ var Routes = []Route{
 		Pattern:     "/oauth/account",
 		HandlerFunc: controller.CreateAccount,
 		NeedAuth:    true,
+		Permission: AuthPermission{
+			Roles:  []string{"ROLE_ADMIN"},
+			Scopes: []string{"oauth.super", "oauth.write"},
+		},
+	},
+
+	{
+		Method:      "POST",
+		Pattern:     "/oauth/token",
+		HandlerFunc: controller.GetAccessToken,
+		NeedAuth:    false,
 	},
 }
