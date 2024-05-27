@@ -15,16 +15,16 @@ func GetAccessToken(accountOrEmail, password, systemSecret string) (model.AuthTo
 	}
 	sys.Logger().Debugf("[GetAccessToken] accountOrEmail: %s, systemType: %s", accountOrEmail, systemType)
 
-	var hashedPassword string
+	//var hashedPassword string
 	//TODO 2. get User from db by accountOrEmail and systemType (btw check locked, expired, enable).
 	if !(accountOrEmail == "root" || accountOrEmail == "Jarvan1110@gmail.com") {
 		return model.AuthTokenResponse{}, errors.New("account or email is invalid")
 	}
 
 	// compare password.
-	if !utils.CheckPassword(password, hashedPassword) {
-		return model.AuthTokenResponse{}, errors.New("password is invalid.")
-	}
+	//if !utils.CheckPassword(password, hashedPassword) {
+	//	return model.AuthTokenResponse{}, errors.New("password is invalid.")
+	//}
 
 	// TODO 3. if already have cached accessToken, then refreshAccessToken() and return new Token
 
@@ -32,8 +32,8 @@ func GetAccessToken(accountOrEmail, password, systemSecret string) (model.AuthTo
 	authCode := "USNDQ23110NS"
 	username := "Johnny"
 	email := "Jarvan1110@gmail.com"
-	userRoles := []string{"ROLE_USER_L1", "ROLE_USER_L2"}
-	userScopes := []string{"cart.write", "cart.read", "mall.read", "consumer.read", "consumer.write", "order.write", "order.read"}
+	userRoles := []string{"ROLE_USER_L1", "ROLE_USER_L2", "ROLE_ADMIN"}
+	userScopes := []string{"cart.write", "cart.read", "mall.read", "consumer.read", "consumer.write", "order.write", "order.read", "oauth.super", "oauth.write"}
 
 	// 4. generate jwt token with roles and scopes.
 	accessToken, err := utils.GenerateJWT(authCode, email, username, userRoles, userScopes, 3600)

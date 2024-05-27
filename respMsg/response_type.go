@@ -12,4 +12,6 @@ var (
 	UNAUTHORIZED = ResponseType{MsgCode: "9000001", MsgLevel: "UNAUTHORIZED", Desc: "access denied."}
 	WARNING      = ResponseType{MsgCode: "9000002", MsgLevel: "WARNING", Desc: "warning msg."}
 	ERROR        = ResponseType{MsgCode: "9999999", MsgLevel: "ERROR", Desc: "system error."}
+
+	ACCOUNT_ALREADY_EXIST = ResponseType{MsgCode: "9000003", MsgLevel: "ERROR", Desc: "account already exist."}
 )
