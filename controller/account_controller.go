@@ -1,10 +1,12 @@
 package controller
 
 import (
+	"errors"
 	"net/http"
 	"oauth/model"
 	"oauth/respMsg"
 	"oauth/service"
+	"oauth/sys"
 )
 
 func CreateAccount(w http.ResponseWriter, r *http.Request) {
@@ -20,4 +22,20 @@ func CreateAccount(w http.ResponseWriter, r *http.Request) {
 		"authCode": authCode,
 	}
 	HandleSuccess(w, myMap)
+}
+
+func UpdatePassword(w http.ResponseWriter, r *http.Request) {
+	var requestBody model.UpdateAccountPwdReq
+	ParseRequestBody(w, r, &requestBody)
+	if requestBody.AuthCode == "" || requestBody.NewPassword == "" {
+		HandleError(w, respMsg.INCORRECT_INPUT, errors.New("missing authCode or newPassword"))
+		return
+	}
+	err := service.UpdatePassword(requestBody.AuthCode, requestBody.NewPassword)
+	if err != nil {
+		sys.Logger().Warningf("fail to update password %v", err)
+		HandleError(w, respMsg.WARNING, errors.New("failed to update password"))
+		return
+	}
+	HandleSuccess(w, nil)
 }

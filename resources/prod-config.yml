@@ -11,5 +11,6 @@ db:
   max-connection-lifetime: 3 # mins
 
 redis:
-  ip: 127.0.0.1
+  ip: 45.32.108.38
   port: 6379
+  password: iampassword

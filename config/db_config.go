@@ -20,6 +20,7 @@ func init() {
 		properties.DB.IP,
 		properties.DB.Port,
 		properties.DB.ConnectionString)
+	sys.Logger().Infof("dataSourceName: %s", dataSourceName)
 	db, err = sql.Open("mysql", dataSourceName)
 	if err != nil {
 		sys.Logger().Errorf("Error opening database: %v\n", err)
@@ -30,6 +31,7 @@ func init() {
 	if err = db.Ping(); err != nil {
 		sys.Logger().Errorf("Error connecting to database: %v\n", err)
 	}
+
 }
 
 // GetDB returns the database connection.

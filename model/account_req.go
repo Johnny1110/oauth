@@ -7,8 +7,7 @@ type CreateAccountReq struct {
 }
 
 type UpdateAccountPwdReq struct {
-	Email       string `json:"email"`
-	Account     string `json:"account"`
+	AuthCode    string `json:"authCode"`
 	NewPassword string `json:"newPassword"`
 }
 

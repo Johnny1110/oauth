@@ -40,7 +40,7 @@ func AuthenticationMiddleware(next http.Handler) http.Handler {
 
 					authToken := strings.TrimPrefix(auth, "Bearer ")
 					// Implement token validation and role/scope checking here
-					userRoles, userScopes, err := utils.ValidateToken(authToken)
+					_, userRoles, userScopes, err := utils.ValidateToken(authToken)
 
 					if err != nil {
 						sys.Logger().Warningf("auth failed: %s %s - invalid token", httpMethod, url)

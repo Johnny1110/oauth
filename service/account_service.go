@@ -58,3 +58,25 @@ func CreateAccount(email, username, password string) (string, error) {
 	}
 	return authCode, err
 }
+
+func UpdatePassword(authCode string, newPassword string) error {
+	systemType := enum.FRIZO_USER // default common user account
+	hashedPassword := utils.HashPassword(newPassword)
+	account, err := dao.SelectAccountByAuthCode(systemType.Code, authCode)
+	if err != nil {
+		return err
+	}
+	if account.AuthCode == "" {
+		sys.Logger().Warningf("account %s not exists", authCode)
+		return errors.New("account not exist")
+	}
+	account.PasswordHash = hashedPassword
+	effectRow, err := dao.UpdateAccount(account)
+	if err != nil {
+		return err
+	}
+	if effectRow == 0 {
+		return errors.New("update account failed")
+	}
+	return nil
+}

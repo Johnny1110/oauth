@@ -19,3 +19,14 @@ type Account struct {
 	Locked       bool   `json:"locked"`
 	Expired      bool   `json:"expired"`
 }
+
+type Role struct {
+	ID       int    `json:"-"`
+	RoleName string `json:"role_name"`
+}
+
+type System struct {
+	ID         int    `json:"-"`
+	SystemCode string `json:"system_code"`
+	Secret     string `json:"secret"`
+}

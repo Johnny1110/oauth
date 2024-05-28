@@ -2,42 +2,65 @@ package service
 
 import (
 	"errors"
+	"oauth/cache"
+	"oauth/dao"
+	"oauth/entity"
+	"oauth/enum"
 	"oauth/model"
 	"oauth/sys"
 	"oauth/utils"
+	"strings"
 )
 
 func GetAccessToken(accountOrEmail, password, systemSecret string) (model.AuthTokenResponse, error) {
-	// TODO 1. parse systemSecret to get systemType
-	systemType, err := parseSystemSecret(systemSecret)
+	//  1. parse systemSecret to get systemCode
+	systemID, err := parseSystemSecretToID(systemSecret)
 	if err != nil {
 		return model.AuthTokenResponse{}, err
 	}
-	sys.Logger().Debugf("[GetAccessToken] accountOrEmail: %s, systemType: %s", accountOrEmail, systemType)
+	sys.Logger().Debugf("[GetAccessToken] accountOrEmail: %s, systemID: %s", accountOrEmail, systemID)
 
-	//var hashedPassword string
-	//TODO 2. get User from db by accountOrEmail and systemType (btw check locked, expired, enable).
-	if !(accountOrEmail == "root" || accountOrEmail == "Jarvan1110@gmail.com") {
+	account, _ := dao.SelectAccountByHybridParams(systemID, accountOrEmail)
+	if account == nil {
 		return model.AuthTokenResponse{}, errors.New("account or email is invalid")
 	}
 
+	if !account.Enable && account.Locked && account.Expired {
+		return model.AuthTokenResponse{}, errors.New("account or email is locked")
+	}
+
 	// compare password.
-	//if !utils.CheckPassword(password, hashedPassword) {
-	//	return model.AuthTokenResponse{}, errors.New("password is invalid.")
-	//}
+	if !utils.CheckPassword(password, account.PasswordHash) {
+		return model.AuthTokenResponse{}, errors.New("password is invalid.")
+	}
 
-	// TODO 3. if already have cached accessToken, then refreshAccessToken() and return new Token
+	return generateAuthResponse(account)
+}
 
-	// TODO for the test : dummy user roles and scopes data
-	authCode := "USNDQ23110NS"
-	username := "Johnny"
-	email := "Jarvan1110@gmail.com"
-	userRoles := []string{"ROLE_USER_L1", "ROLE_USER_L2", "ROLE_ADMIN"}
-	userScopes := []string{"cart.write", "cart.read", "mall.read", "consumer.read", "consumer.write", "order.write", "order.read", "oauth.super", "oauth.write"}
+func generateAuthResponse(account *entity.Account) (model.AuthTokenResponse, error) {
+	sys.Logger().Debugf("[generateAuthResponse] account: %v", account)
+	authCode := account.AuthCode
+	username := account.Username
+	email := account.Email
+	userRoles := dao.SelectAccountRolesByAuthCode(authCode)
+	userRoleNames := make([]string, len(userRoles))
+	for i, role := range userRoles {
+		userRoleNames[i] = role.RoleName
+	}
+	userScopes := dao.SelectAccountScopesByAuthCode(authCode)
+	userScopeNames := make([]string, len(userScopes))
+	for i, scope := range userScopes {
+		userScopeNames[i] = scope.Scope
+	}
+	// for refresh token
+	refreshTokenScopeNames := []string{"oauth.refresh"}
 
+	// token expireTime timeUnit = min
+	accessTokenExpiresIn := 3600
+	refreshTokenExpiresIn := 3600
 	// 4. generate jwt token with roles and scopes.
-	accessToken, err := utils.GenerateJWT(authCode, email, username, userRoles, userScopes, 3600)
-	refreshToken, err := utils.GenerateJWT(authCode, email, username, userRoles, userScopes, 3600)
+	accessToken, err := utils.GenerateJWT(authCode, email, username, userRoleNames, userScopeNames, accessTokenExpiresIn)
+	refreshToken, err := utils.GenerateJWT(authCode, email, username, userRoleNames, refreshTokenScopeNames, refreshTokenExpiresIn)
 	if err != nil {
 		return model.AuthTokenResponse{}, err
 	}
@@ -45,20 +68,63 @@ func GetAccessToken(accountOrEmail, password, systemSecret string) (model.AuthTo
 	response := model.AuthTokenResponse{
 		AccessToken:           accessToken,
 		RefreshToken:          refreshToken,
-		AccessTokenExpiresIn:  3600,
-		RefreshTokenExpiresIn: 3600,
+		AccessTokenExpiresIn:  accessTokenExpiresIn,
+		RefreshTokenExpiresIn: refreshTokenExpiresIn,
 		TokenType:             "Bearer",
 		AuthCode:              authCode,
 	}
 
-	// 5.TODO cached accessToken and refreshToken
+	// 5 cached accessToken and refreshToken
+	cache.Set(cache.GenKeyString(enum.ACCESS_TOKEN_RDS_KEY, authCode), accessToken, accessTokenExpiresIn)
+	cache.Set(cache.GenKeyString(enum.REFRESH_TOKEN_RDS_KEY, authCode), refreshToken, refreshTokenExpiresIn)
 	return response, nil
 }
 
-// TODO
-func parseSystemSecret(secret string) (string, error) {
-	if secret == "" {
-		return "", errors.New("system secret is invalid.")
+// get systemCode by secret
+func parseSystemSecretToID(secretString string) (int, error) {
+	if secretString == "" {
+		return 0, errors.New("system secret string is invalid.")
 	}
-	return "FRIZO_USER", nil
+	system, _ := dao.GetSystemBySecret(secretString)
+	if system == nil {
+		return 0, errors.New("system secret is invalid.")
+	} else {
+		return system.ID, nil
+	}
+}
+
+func RefreshAccessToken(bearerToken string, systemSecret string) (model.AuthTokenResponse, error) {
+	//  1. parse systemSecret to get systemCode
+	systemID, err := parseSystemSecretToID(systemSecret)
+	if err != nil {
+		return model.AuthTokenResponse{}, err
+	}
+
+	if bearerToken == "" || !strings.HasPrefix(bearerToken, "Bearer ") {
+		return model.AuthTokenResponse{}, errors.New("refresh token is invalid.")
+	}
+
+	refreshToken := strings.TrimPrefix(bearerToken, "Bearer ")
+	// Implement token validation and role/scope checking here
+	authCode, _, userScopes, err := utils.ValidateToken(refreshToken)
+	if err != nil {
+		return model.AuthTokenResponse{}, err
+	}
+
+	checkScopeFlag := false
+	for _, scope := range userScopes {
+		if scope == "oauth.refresh" {
+			checkScopeFlag = true
+		}
+	}
+
+	if !checkScopeFlag {
+		return model.AuthTokenResponse{}, errors.New("refresh token is invalid.")
+	}
+	sys.Logger().Debugf("select acc by systemID:%v authCode: %s", systemID, authCode)
+	account, _ := dao.SelectAccountByAuthCode(systemID, authCode)
+	if account == nil {
+		return model.AuthTokenResponse{}, errors.New("authCode or systemSecret is invalid.")
+	}
+	return generateAuthResponse(account)
 }

@@ -28,19 +28,30 @@ var Routes = []Route{
 
 	{
 		Method:      "POST",
-		Pattern:     "/oauth/account",
+		Pattern:     "/oauth/account", // create account
 		HandlerFunc: controller.CreateAccount,
 		NeedAuth:    true,
 		Permission: AuthPermission{
-			Roles:  []string{"ROLE_ADMIN"},
-			Scopes: []string{"oauth.super", "oauth.write"},
+			Roles:  []string{"ROLE_SYS_ADMIN"},
+			Scopes: []string{"oauth.sp", "oauth.write"},
 		},
 	},
 
 	{
 		Method:      "POST",
-		Pattern:     "/oauth/token",
-		HandlerFunc: controller.GetAccessToken,
+		Pattern:     "/oauth/token", // get access_token
+		HandlerFunc: controller.AccessToken,
 		NeedAuth:    false,
+	},
+
+	{
+		Method:      "PUT",
+		Pattern:     "/oauth/password", // update password 不開放一般 user 自己來改密碼（因為驗證手續 ex: email 驗證 需要在 consumer 模組做）
+		HandlerFunc: controller.UpdatePassword,
+		NeedAuth:    true,
+		Permission: AuthPermission{
+			Roles:  []string{"ROLE_SYS_ADMIN"},
+			Scopes: []string{"oauth.sp", "oauth.write"},
+		},
 	},
 }

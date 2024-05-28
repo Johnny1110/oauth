@@ -17,7 +17,8 @@ type Properties struct {
 	} `yaml:"db"`
 
 	Redis struct {
-		IP   string `yaml:"ip"`
-		Port int    `yaml:"port"`
+		IP       string `yaml:"ip"`
+		Port     int    `yaml:"port"`
+		Password string `yaml:"password"`
 	} `yaml:"redis"`
 }
