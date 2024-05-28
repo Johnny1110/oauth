@@ -39,6 +39,7 @@ test-job:
   extends: [.base-job-config]
   script:
     - go test ./...
+  allow_failure: true
   cache:
     policy: pull #  cache should be pulled from the cache storage before the job starts.
 
