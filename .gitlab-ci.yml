@@ -70,4 +70,4 @@ deploy-job:
     - docker build -t $IMAGE_NAME .
     - if [ "$(docker ps -aq --filter name=$APP_CONTAINER_NAME)" ]; then docker rm -f $APP_CONTAINER_NAME; fi # 刪除舊的容器
     - mkdir -p /path/on/host/logs # 準備 log 存放位置
-    - docker run -d -p 8080:8080 --name $APP_CONTAINER_NAME -v /path/on/host/logs:/logs $IMAGE_NAME # 建立新容器並執行
+    - docker run -d -p 5001:5000 --net=frizo-net --name $APP_CONTAINER_NAME -v /path/on/host/logs:/logs $IMAGE_NAME # 建立新容器並執行
