@@ -1,9 +1,9 @@
 insert into oauth.role (id, role_name, `desc`, enable)
-values (1, 'ROLE_SYS_ADMIN', null, 1),
-       (2, 'ROLE_SYS_RESOURCE', null, 1),
-       (3, 'ROLE_SYS_USER_L1', null, 1),
-       (4, 'ROLE_SYS_USER_L2', null, 1),
-       (5, 'ROLE_SYS_USER_L3', null, 1);
+values (1, 'SYS_ADMIN', null, 1),
+       (2, 'SYS_RESOURCE', null, 1),
+       (3, 'SYS_USER_L1', null, 1),
+       (4, 'SYS_USER_L2', null, 1),
+       (5, 'SYS_USER_L3', null, 1);
 
 insert into oauth.system (id, system_code, secret, `desc`, enable)
 values (1, 'FRIZO_USER', 'X33RQNQG69CA62AOCUQK5XKRUX9BXUH4', '一般 user 帳號', 1),
