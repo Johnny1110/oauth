@@ -47,3 +47,34 @@ func Set(key string, val string, ttl int) bool {
 	}
 	return true
 }
+
+func ScanDelete(keyPrefix string) {
+	rdb := config.GetRedisClient()
+	ctx := config.GetRedisContext()
+	// scan
+	var cursor uint64
+	var keys []string
+	for {
+		var err error
+		var k []string
+		k, cursor, err = rdb.Scan(ctx, cursor, keyPrefix+"*", 0).Result()
+		if err != nil {
+			sys.Logger().Fatalf("Failed to scan keys: %v", err)
+		}
+		keys = append(keys, k...)
+		if cursor == 0 {
+			break
+		}
+	}
+
+	// delete
+	if len(keys) > 0 {
+		err := rdb.Del(ctx, keys...).Err()
+		if err != nil {
+			sys.Logger().Fatalf("Failed to delete keys: %v", err)
+		}
+		sys.Logger().Printf("Deleted %d keys\n", len(keys))
+	} else {
+		sys.Logger().Println("No keys found to delete")
+	}
+}

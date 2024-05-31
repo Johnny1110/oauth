@@ -32,8 +32,8 @@ var Routes = []Route{
 		HandlerFunc: controller.CreateAccount,
 		NeedAuth:    true,
 		Permission: AuthPermission{
-			Roles:  []string{"ROLE_SYS_ADMIN"},
-			Scopes: []string{"oauth.sp", "oauth.write"},
+			Roles:  []string{"SYS_ADMIN", "SYS_RESOURCE"},
+			Scopes: []string{"oauth.sp"},
 		},
 	},
 
@@ -50,8 +50,18 @@ var Routes = []Route{
 		HandlerFunc: controller.UpdatePassword,
 		NeedAuth:    true,
 		Permission: AuthPermission{
-			Roles:  []string{"ROLE_SYS_ADMIN"},
-			Scopes: []string{"oauth.sp", "oauth.write"},
+			Roles:  []string{"SYS_ADMIN", "SYS_RESOURCE"},
+			Scopes: []string{"oauth.sp"},
+		},
+	},
+
+	{
+		Method:      "PUT",
+		Pattern:     "/oauth/logout",
+		HandlerFunc: controller.Logout,
+		NeedAuth:    true,
+		Permission: AuthPermission{
+			Roles: []string{"SYS_ADMIN", "SYS_RESOURCE", "SYS_USER_L1", "SYS_USER_L2", "SYS_USER_L3"},
 		},
 	},
 }

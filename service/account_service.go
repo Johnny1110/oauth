@@ -14,9 +14,9 @@ func CreateAccount(email, username, password string) (string, error) {
 	systemType := enum.FRIZO_USER // default common user account
 	hashedPassword := utils.HashPassword(password)
 
-	account := dao.SelectAccountByEmailOrUsername(systemType.Code, email, username)
+	account, _ := dao.SelectAccountByEmailOrUsername(systemType.Code, email, username)
 
-	if account.AuthCode != "" {
+	if account != nil {
 		sys.Logger().Warningf("account %s already exists", email)
 		return "", errors.New("account already exist")
 	}
@@ -29,7 +29,7 @@ func CreateAccount(email, username, password string) (string, error) {
 		return "", err
 	}
 
-	account = entity.Account{
+	newAccount := entity.Account{
 		SystemID:     systemType.Code,
 		AuthCode:     authCode,
 		Email:        strings.ToLower(email),
@@ -40,7 +40,7 @@ func CreateAccount(email, username, password string) (string, error) {
 		Expired:      false,
 	}
 
-	accountID, err := dao.InsertAccount(account)
+	accountID, err := dao.InsertAccount(newAccount)
 	if err != nil {
 		sys.Logger().Warningf("insert account failed: %s", err.Error())
 		return "", err
@@ -62,7 +62,7 @@ func CreateAccount(email, username, password string) (string, error) {
 func UpdatePassword(authCode string, newPassword string) error {
 	systemType := enum.FRIZO_USER // default common user account
 	hashedPassword := utils.HashPassword(newPassword)
-	account, err := dao.SelectAccountByAuthCode(systemType.Code, authCode)
+	account, err := dao.SelectAccountBySystemIDAndAuthCode(systemType.Code, authCode)
 	if err != nil {
 		return err
 	}

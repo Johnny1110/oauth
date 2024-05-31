@@ -136,9 +136,6 @@ func HasRequiredPermissions(userRoles, requiredRoles, userScopes, requiredScopes
 	return roleMatch && scopeMatch
 }
 
-// secret key used for signing JWT tokens
-var jwtSecretKey = []byte("your-very-secret-key")
-
 func GenerateJWT(authCode string, email string, username string, userRoles []string, userScopes []string, expiresIn int) (string, error) {
 	// Generate JWT token with roles and scopes
 
@@ -155,6 +152,36 @@ func GenerateJWT(authCode string, email string, username string, userRoles []str
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 			Issuer:    "frizo-oauth",
 			Subject:   username,
+			ID:        jwtID,
+		},
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodRS256, claims)
+	tokenString, err := token.SignedString(RSAPrivateKey)
+	if err != nil {
+		return "", err
+	}
+
+	return tokenString, nil
+}
+
+func GenerateClientJWT(clientID string, clientName string, clientRoles []string, clientScopes []string, expiresIn int) (string, error) {
+	// Generate JWT token with roles and scopes
+
+	jwtID := GenRandomString(32, true)
+	// expire time
+	expirationTime := time.Now().Add(time.Duration(expiresIn) * time.Minute)
+	claims := &model.Claims{
+		AuthCode:   clientID,
+		ClientID:   clientID,
+		ClientName: clientName,
+		Roles:      clientRoles,
+		Scopes:     clientScopes,
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(expirationTime),
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
+			Issuer:    "frizo-oauth",
+			Subject:   clientName,
 			ID:        jwtID,
 		},
 	}

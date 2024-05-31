@@ -65,12 +65,18 @@ func InsertAccountScopes(accountID int64, scopes []entity.Scope) (int64, error) 
 	return rowsAffected, nil
 }
 
-func SelectAccountByEmailOrUsername(systemTypeId int, email string, username string) entity.Account {
+func SelectAccountByEmailOrUsername(systemTypeId int, email string, username string) (*entity.Account, error) {
 	db := config.GetDB()
 	var account entity.Account
 	query := "SELECT id,system_id,auth_code,email,username,password_hash from oauth.account where system_id = ? and (email = ? or username = ?)"
-	db.QueryRow(query, systemTypeId, email, username).Scan(&account.ID, &account.SystemID, &account.AuthCode, &account.Email, &account.Username, &account.PasswordHash)
-	return account
+	err := db.QueryRow(query, systemTypeId, email, username).Scan(&account.ID, &account.SystemID, &account.AuthCode, &account.Email, &account.Username, &account.PasswordHash)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, fmt.Errorf("account not found")
+		}
+		return nil, err
+	}
+	return &account, nil
 }
 
 func SelectAccountByHybridParams(systemTypeId int, accountOrEmail string) (*entity.Account, error) {
@@ -87,11 +93,25 @@ func SelectAccountByHybridParams(systemTypeId int, accountOrEmail string) (*enti
 	return &account, nil
 }
 
-func SelectAccountByAuthCode(systemTypeId int, authCode string) (*entity.Account, error) {
+func SelectAccountBySystemIDAndAuthCode(systemTypeId int, authCode string) (*entity.Account, error) {
 	db := config.GetDB()
 	var account entity.Account
 	query := "SELECT id, system_id, auth_code, email, username, password_hash, enable, locked, expired from oauth.account where system_id = ? and auth_code = ?"
 	err := db.QueryRow(query, systemTypeId, authCode).Scan(&account.ID, &account.SystemID, &account.AuthCode, &account.Email, &account.Username, &account.PasswordHash, &account.Enable, &account.Locked, &account.Expired)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, fmt.Errorf("account not found")
+		}
+		return nil, err
+	}
+	return &account, nil
+}
+
+func SelectAccountByAuthCode(authCode string) (*entity.Account, error) {
+	db := config.GetDB()
+	var account entity.Account
+	query := "SELECT id, system_id, auth_code, email, username, password_hash, enable, locked, expired from oauth.account where auth_code = ?"
+	err := db.QueryRow(query, authCode).Scan(&account.ID, &account.SystemID, &account.AuthCode, &account.Email, &account.Username, &account.PasswordHash, &account.Enable, &account.Locked, &account.Expired)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, fmt.Errorf("account not found")

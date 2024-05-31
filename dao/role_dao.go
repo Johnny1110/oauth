@@ -59,3 +59,31 @@ func SelectAccountRolesByAuthCode(authCode string) []entity.Role {
 	}
 	return roles
 }
+
+func SelectClientRolesByClientPK(clientPK int) []entity.Role {
+	db := config.GetDB()
+	query := "SELECT role.id, role.role_name from oauth.role as role inner join oauth.client_roles as cr on role.id = cr.role_id where cr.client_id = ? and cr.enable = 1 and role.enable = 1;"
+	var roles []entity.Role
+	rows, err := db.Query(query, clientPK)
+	if err != nil {
+		sys.Logger().Errorf("SelectClientRolesByClientPK error: %s", err.Error())
+		return roles
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var role entity.Role
+		err := rows.Scan(&role.ID, &role.RoleName)
+		if err != nil {
+			sys.Logger().Errorf("SelectClientRolesByClientPK error: %s", err.Error())
+			return roles
+		}
+		roles = append(roles, role)
+	}
+
+	if err = rows.Err(); err != nil {
+		sys.Logger().Errorf("SelectClientRolesByClientPK error: %s", err.Error())
+		return roles
+	}
+	return roles
+}

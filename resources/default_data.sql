@@ -10,7 +10,7 @@ values (1, 'FRIZO_USER', 'X33RQNQG69CA62AOCUQK5XKRUX9BXUH4', '一般 user 帳號
        (2, 'FRIZO_ADMIN', 'RCUG8GILMLVMK6JT8AWTXCALTIQZYHQ8', 'admin 帳號', 1),
        (3, 'FRIZO_RESOURCE', 'V4F01M2YHUPJRVXVAQSO4P8R5MJH9ZJD', 'resource server', 1);
 
-insert into oauth.system_settings (id, key, value, memo, json_data)
+insert into oauth.system_settings (id, `key`, value, memo, json_data)
 values (1, 'jwt.private.key', '-----BEGIN PRIVATE KEY-----
 MIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQCcalnn5Qiffkkuc0z4LXhbBnP41tDZ9xXZCWD2bjtK49zl8Dq1jAnW1eeQJWy1XXs8ZicPPek6JF9p3XxuhYX9mSSuZCd2NXfaBI079TlLXK8A2KInhG9mfxkXtGrBHC5LaZSGJf7S1ROoWNTrC949YUIuQ9CqEXlJ6rSKFYIgQD9IXnn4DVArLiZWkRCgG9bhQSdLSh4lxf2g916CMLcG8umVP68fg6cD3k7NZikzfS9p93tYgPnd9m70poC8Ip08hZxKyEXXltqiePUdTAntJNhfv6VOQQuSYF66bYfquY6HzHQ3VyDqK5xMbSI12qMgazAaTbzigwcUvOFbA7rLAgMBAAECggEAZnIRqJyN5UilTdMe2n2NkrDLTHQGHnyCxsApzb2tAAP2LnQFP9sUpq07GWIprTApAwo1EvqNwxMHmyMB2LGDbPHc4IugfP/QG+9XQan/eKifxoIc0p0fCZa9LJVyRkDa4XGpYaOJHzWHxn9IFRqU2MbWvc6U4I7JTex3iulDbTMhF4R0M76Z3jtlhGlWsq/2kintBbje+ZXAFvPTGdo3DV/vih2uli9/YqUsDMphdW/m8tCVYmW9hpKiQYcp0/Dv8kLzB2/jeZ+BRoTeS09JLpO2sFEiJATyXmpq2Qhk8g0y6zy5drzjxkun5x5wBgSOulNT4EZddaTkmcIWrVOJoQKBgQDLL+elScwNJBmA3CZdXGcbbfE4qK29kXcB2kG//0FFBwWVhFUXg6pgOvWINVfar3gguUFnIKklA3Wb859Q9kW3gMyA/w2104AO4G71o2fyNydabeYsxh1WKHWpobQWxyXqJne6pr3ukTb3tp8UPKfb1OFdtjMEduGjQfBO3EfhhQKBgQDFEkCbhS6MjBhGJnlUUSUcY5aNFvIixv+arXheR+IzJCuosgJrmFRXQbCBx/3/4xQJZuEdPehjWCDq7kTJdZgrKMzBoVrVnn3uuA3t6r6u7HjkYflsYdT+OfYaZJdjMUHho94n4PSlYvRqQ6eCGjAaJ26Kie1Dnu5QAc2w3gy0DwKBgQCVrNtSWhNzVrVmxEWKnqfhf9KjLzaVH5PwDGxE1+6nv61wX8QjBz25l5UJWmo2UO4IBQ/VvSx8dJjtYcBpbpEaxUlgeQILgBqkWtXCIzZOKizWI4DcWLCBqFpMtC6qXNdkLiQinfPpypUYUzHKQYhRmvbNBot8bWp3zfoMzZ4x1QKBgQC1L2jTE4mOkqcmp+zZBpnWFgGuyi/opYkPTvnhxLlFR7YULUVoYu74Il8DkzoF72LWmg3Scr6bx8TL+jCoAEPdOm+2foEi8cralcHIwhB6htNHNoS5juDis6t+7Ij7G6h0qdJwW7TR8b7BjF4PkcAz65kIKnNHvnFggaf5Os33JQKBgQDGPTQxfg0wIpbTzjCIXlQ7jH5u8M3J5vzFS48egZl3gSuV37QXQ2XsM0SOi1bviZmUp5XSfuH3wjk9tLuVRjYkYIzIotc8wi46UwyJ7A01psqvIMgLF1tIvEfOiqZCvkqehDnp98Wsv/d6VPOmvkt4HJzGxQ9vPbMWtQmKDj3jdQ==
 -----END PRIVATE KEY-----', null, '{}'),
@@ -18,6 +18,15 @@ MIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQCcalnn5Qiffkkuc0z4LXhbBnP41tDZ
 MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnGpZ5+UIn35JLnNM+C14WwZz+NbQ2fcV2Qlg9m47SuPc5fA6tYwJ1tXnkCVstV17PGYnDz3pOiRfad18boWF/ZkkrmQndjV32gSNO/U5S1yvANiiJ4RvZn8ZF7RqwRwuS2mUhiX+0tUTqFjU6wvePWFCLkPQqhF5Seq0ihWCIEA/SF55+A1QKy4mVpEQoBvW4UEnS0oeJcX9oPdegjC3BvLplT+vH4OnA95OzWYpM30vafd7WID53fZu9KaAvCKdPIWcSshF15baonj1HUwJ7STYX7+lTkELkmBeum2H6rmOh8x0N1cg6iucTG0iNdqjIGswGk284oMHFLzhWwO6ywIDAQAB
 -----END PUBLIC KEY-----', null, '{}'),
        (3, 'jwt.exp.min', '3600', null, '{}');
+
+insert into oauth.resource_servive (id, service_name, `desc`, created_at, updated_at)
+values  (1, 'mall', '商城模組', '2024-05-27 23:00:03', '2024-05-27 23:00:03'),
+        (2, 'cart', '購物車模組', '2024-05-27 23:00:03', '2024-05-27 23:00:03'),
+        (3, 'payment', '支付模組', '2024-05-27 23:00:03', '2024-05-27 23:00:03'),
+        (4, 'order', '訂單模組', '2024-05-27 23:00:03', '2024-05-27 23:00:03'),
+        (5, 'consumer', '用戶模組', '2024-05-27 23:00:03', '2024-05-27 23:00:03'),
+        (6, 'oauth', 'oauth 模組', '2024-05-27 23:00:03', '2024-05-27 23:00:03'),
+        (7, 'vendor', 'vendor 模組', '2024-05-27 23:00:03', '2024-05-27 23:00:03');
 
 insert into oauth.scope (id, resouce_id, scope, enable, `desc`)
 values (1, 1, 'mall.read', 1, '商城模組'),
@@ -41,15 +50,6 @@ values (1, 1, 'mall.read', 1, '商城模組'),
        (19, 7, 'vendor.read', 1, 'vendor 模組'),
        (20, 7, 'vendor.write', 1, 'vendor 模組'),
        (21, 7, 'vendor.sp', 1, 'vendor 模組');
-
-insert into oauth.resource_servive (id, service_name, `desc`, created_at, updated_at)
-values (1, 'mall', '商城模組', '2024-05-27 23:00:03', '2024-05-27 23:00:03'),
-       (2, 'cart', '購物車模組', '2024-05-27 23:00:03', '2024-05-27 23:00:03'),
-       (3, 'payment', '支付模組', '2024-05-27 23:00:03', '2024-05-27 23:00:03'),
-       (4, 'order', '訂單模組', '2024-05-27 23:00:03', '2024-05-27 23:00:03'),
-       (5, 'consumer', '用戶模組', '2024-05-27 23:00:03', '2024-05-27 23:00:03'),
-       (6, 'oauth', 'oauth 模組', '2024-05-27 23:00:03', '2024-05-27 23:00:03'),
-       (7, 'vendor', 'vendor 模組', '2024-05-27 23:00:03', '2024-05-27 23:00:03');
 
 insert into oauth.role_default_scopes (role_id, scope_id, enabled)
 values (1, 1, 1),
@@ -159,3 +159,84 @@ values (1, 1, 1),
        (7, 19, 1),
        (7, 20, 1),
        (7, 21, 1);
+
+insert into oauth.client (id, client_id, client_name, client_secret, created_at, updated_at, enable)
+values  (1, 'mall', 'frizo mall', '0pwRH6GII8k4hDSZJmQaLw0VR8zYq3f0DrXHdzdkaYSM6VT1KVLCt0IR5RRMfbBr', '2024-05-31 23:42:13', '2024-05-31 23:43:37', 1),
+        (2, 'cart', 'frizo shoppingcart', '8lQHwlc1JGpZaVmvf2VMtWdW0YmgdmgddgxCtWUy138e3321glbFAgL68pz1ph2Z', '2024-05-31 23:42:13', '2024-05-31 23:43:37', 1),
+        (3, 'payment', 'frizo payment', 'DxczrMRaOxJe9UQJDydMP94EWO7LVM5FozGrMcQd9RbyDASMvwXWkdWXnKQSFFTM', '2024-05-31 23:42:13', '2024-05-31 23:43:37', 1),
+        (4, 'order', 'frizo order', 'OJiWc5g81dSONemWG0qOY8O7onugsrziGePLjxBAeidOPXrNzwm0GAJAlofYVYu4', '2024-05-31 23:42:13', '2024-05-31 23:43:37', 1),
+        (5, 'consumer', 'frizo consumer', 'UptWuyP1gSjDYIwFiFgC0ZtPj9aVluxEau1tiiy669rBdXRp90fq7Fu1KHkBPHHq', '2024-05-31 23:42:13', '2024-05-31 23:43:37', 1),
+        (6, 'oauth', 'frizo oauth', 'ZYYo4fXyKqCWj8MlTG0p0rV0tVqZNWCVOyEEVztkZ6nCKtlQXLAwcA67PkgvQ1vG', '2024-05-31 23:42:13', '2024-05-31 23:43:37', 1),
+        (7, 'vendor', 'frizo vendor', 'dlQgfoHdwidweyx5ytUYxqqNhLQ1kaqLeT4UUd7LqFwc191SofLJpcPJXnqzyXhs', '2024-05-31 23:42:13', '2024-05-31 23:43:37', 1);
+
+insert into oauth.client_roles (client_id, role_id, enable)
+values  (1, 2, 1),
+        (2, 2, 1),
+        (3, 2, 1),
+        (4, 2, 1),
+        (5, 2, 1),
+        (6, 2, 1),
+        (7, 2, 1);
+
+insert into oauth.client_scopes (client_id, scope_id, enable)
+values  (1, 3, 1),
+        (1, 6, 1),
+        (1, 9, 1),
+        (1, 12, 1),
+        (1, 15, 1),
+        (1, 18, 1),
+        (1, 21, 1),
+        (2, 3, 1),
+        (2, 6, 1),
+        (2, 9, 1),
+        (2, 12, 1),
+        (2, 15, 1),
+        (2, 18, 1),
+        (3, 3, 1),
+        (3, 6, 1),
+        (3, 9, 1),
+        (3, 12, 1),
+        (3, 15, 1),
+        (3, 18, 1),
+        (4, 3, 1),
+        (4, 6, 1),
+        (4, 9, 1),
+        (4, 12, 1),
+        (4, 15, 1),
+        (4, 18, 1),
+        (5, 3, 1),
+        (5, 6, 1),
+        (5, 9, 1),
+        (5, 12, 1),
+        (5, 15, 1),
+        (5, 18, 1),
+        (6, 3, 1),
+        (6, 6, 1),
+        (6, 9, 1),
+        (6, 12, 1),
+        (6, 15, 1),
+        (6, 18, 1),
+        (6, 21, 1);
+
+
+insert into oauth.account (id, system_id, auth_code, email, username, password_hash, enable, locked, expired, created_at, updated_at)
+values  (1, 2, 'asdadmsajkoipjpj12lmposa', 'root@gmail.com', 'root', '$2a$10$f3gbww1aXgdtscbKQdUSguWNvncE/JJ6fnrrar7clvQeVEi3ODlpG', 1, 0, 0, '2024-06-01 01:18:07', '2024-06-01 01:18:49');
+
+insert into oauth.account_scopes (account_id, scope_id, enable)
+values  (1, 1, 1),
+        (1, 2, 1),
+        (1, 3, 1),
+        (1, 4, 1),
+        (1, 5, 1),
+        (1, 6, 1),
+        (1, 7, 1),
+        (1, 8, 1),
+        (1, 9, 1),
+        (1, 10, 1);
+
+insert into oauth.account_roles (account_id, role_id, enable)
+values  (1, 1, 1),
+        (1, 2, 1),
+        (1, 3, 1),
+        (1, 4, 1),
+        (1, 5, 1);

@@ -14,7 +14,7 @@ type Account struct {
 	AuthCode     string `json:"auth_code"`
 	Email        string `json:"email"`
 	Username     string `json:"username"`
-	PasswordHash string `json:"password_hash"`
+	PasswordHash string `json:"-"`
 	Enable       bool   `json:"enable"`
 	Locked       bool   `json:"locked"`
 	Expired      bool   `json:"expired"`
@@ -29,4 +29,12 @@ type System struct {
 	ID         int    `json:"-"`
 	SystemCode string `json:"system_code"`
 	Secret     string `json:"secret"`
+}
+
+type Client struct {
+	ID           int    `json:"-"`
+	ClientID     string `json:"client_id"`
+	ClientName   string `json:"client_name"`
+	ClientSecret string `json:"-"`
+	Enable       bool   `json:"enable"`
 }
