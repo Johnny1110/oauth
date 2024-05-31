@@ -3,7 +3,6 @@ package service
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"oauth/cache"
 	"oauth/dao"
 	"oauth/entity"
@@ -140,13 +139,11 @@ func ClientCredentials(clientID string, clientSecret string) (model.AuthTokenRes
 	}
 
 	clientRoles := dao.SelectClientRolesByClientPK(client.ID)
-	fmt.Printf("查出來的 clientRoles: %v", clientRoles)
 	roleNames := make([]string, len(clientRoles))
 	for i, role := range clientRoles {
 		roleNames[i] = role.RoleName
 	}
 	clientScopes := dao.SelectClientScopesByClientPK(client.ID)
-	fmt.Printf("查出來的 clientScopes: %v", clientScopes)
 	scopeNames := make([]string, len(clientScopes))
 	for i, scope := range clientScopes {
 		scopeNames[i] = scope.Scope
