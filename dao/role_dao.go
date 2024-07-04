@@ -7,6 +7,7 @@ import (
 )
 
 func GetRoleDefaultScopes(roleName string) ([]entity.Scope, error) {
+	sys.Logger().Infof("[GetRoleDefaultScopes] input roleName: %s", roleName)
 	db := config.GetDB()
 	query := "SELECT scope.id, scope.resouce_id, scope.scope FROM oauth.scope as scope inner join oauth.role_default_scopes as rds on scope.id = rds.scope_id inner join oauth.role as role on rds.role_id = role.id where role.role_name = ?"
 	rows, err := db.Query(query, roleName)

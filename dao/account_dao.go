@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"oauth/config"
 	"oauth/entity"
+	"oauth/sys"
 )
 
 func InsertAccount(account entity.Account) (int64, error) {
@@ -37,6 +38,7 @@ func InsertAccountRole(accountID int64, roleID int) (int64, error) {
 }
 
 func InsertAccountScopes(accountID int64, scopes []entity.Scope) (int64, error) {
+	sys.Logger().Infof("[InsertAccountScopes] %s, %s", accountID, len(scopes))
 	if len(scopes) == 0 {
 		return 0, nil
 	}
