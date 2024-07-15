@@ -9,7 +9,7 @@ stages:
     - main
   image: golang:1.21.10 # 各 job 基底 image
   tags:
-    - backend
+    - frizo-taiwan
   before_script:
     - ls
   cache:
