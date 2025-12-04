@@ -12,7 +12,10 @@ import (
 func CreateAccount(w http.ResponseWriter, r *http.Request) {
 	var requestBody model.CreateAccountReq
 	ParseRequestBody(w, r, &requestBody)
-
+	if requestBody.Email == "" && requestBody.Account == "" {
+		HandleError(w, respMsg.INCORRECT_INPUT, errors.New("missing username or email"))
+		return
+	}
 	authCode, err := service.CreateAccount(requestBody.Email, requestBody.Account, requestBody.Password)
 	if err != nil {
 		HandleError(w, respMsg.WARNING, err.Error())
