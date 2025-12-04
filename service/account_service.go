@@ -17,7 +17,7 @@ func CreateAccount(email, username, password string) (string, error) {
 	account, _ := dao.SelectAccountByEmailOrUsername(systemType.Code, email, username)
 
 	if account != nil {
-		sys.Logger().Warningf("account %s already exists", email)
+		sys.Logger().Warningf("account %s already exists, %v", email, account.ID)
 		return "", errors.New("account already exist")
 	}
 

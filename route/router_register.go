@@ -30,11 +30,12 @@ var Routes = []Route{
 		Method:      "POST",
 		Pattern:     "/oauth/account", // create account
 		HandlerFunc: controller.CreateAccount,
-		NeedAuth:    true,
-		Permission: AuthPermission{
-			Roles:  []string{"SYS_ADMIN", "SYS_RESOURCE"},
-			Scopes: []string{"oauth.sp"},
-		},
+		NeedAuth:    false,
+		//Permission: AuthPermission{
+		//	Roles:  []string{"SYS_ADMIN", "SYS_RESOURCE"},
+		//	Scopes: []string{"oauth.sp"},
+		//},
+
 	},
 
 	{

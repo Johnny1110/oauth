@@ -1,12 +1,9 @@
 package service
 
 import (
-	"encoding/json"
 	"errors"
-	"oauth/cache"
 	"oauth/dao"
 	"oauth/entity"
-	"oauth/enum"
 	"oauth/model"
 	"oauth/sys"
 	"oauth/utils"
@@ -76,12 +73,13 @@ func generateAuthResponse(account *entity.Account) (model.AuthTokenResponse, err
 	}
 
 	// 5 cached accessToken and refreshToken
-	accountJson, err := json.Marshal(account)
-	if err != nil {
-		return model.AuthTokenResponse{}, errors.New("client json marshal failed")
-	}
-	cache.Set(cache.GenKeyString(enum.ACCESS_TOKEN_RDS_KEY, authCode+":"+accessToken), string(accountJson), accessTokenExpiresIn)
-	cache.Set(cache.GenKeyString(enum.REFRESH_TOKEN_RDS_KEY, authCode+":"+refreshToken), string(accountJson), refreshTokenExpiresIn)
+	//accountJson, err := json.Marshal(account)
+	//if err != nil {
+	//	return model.AuthTokenResponse{}, errors.New("client json marshal failed")
+	//}
+	//cache.Set(cache.GenKeyString(enum.ACCESS_TOKEN_RDS_KEY, authCode+":"+accessToken), string(accountJson), accessTokenExpiresIn)
+	//cache.Set(cache.GenKeyString(enum.REFRESH_TOKEN_RDS_KEY, authCode+":"+refreshToken), string(accountJson), refreshTokenExpiresIn)
+	//
 	return response, nil
 }
 
@@ -164,19 +162,20 @@ func ClientCredentials(clientID string, clientSecret string) (model.AuthTokenRes
 	}
 
 	// 5 cached accessToken and refreshToken
-	clientJson, err := json.Marshal(client)
-	if err != nil {
-		return model.AuthTokenResponse{}, errors.New("client json marshal failed")
-	}
-	ExpireAccessToken(clientID)
-	cache.Set(cache.GenKeyString(enum.ACCESS_TOKEN_RDS_KEY, clientID+":"+accessToken), string(clientJson), accessTokenExpiresIn)
+	//clientJson, err := json.Marshal(client)
+	//if err != nil {
+	//	return model.AuthTokenResponse{}, errors.New("client json marshal failed")
+	//}
+	//ExpireAccessToken(clientID)
+	//cache.Set(cache.GenKeyString(enum.ACCESS_TOKEN_RDS_KEY, clientID+":"+accessToken), string(clientJson), accessTokenExpiresIn)
+	//
 	return response, nil
 }
 
 func ExpireAccessToken(authCode string) {
-	accessTokenStoreKey := cache.GenKeyString(enum.ACCESS_TOKEN_RDS_KEY, authCode)
-	refreshTokenStoreKey := cache.GenKeyString(enum.REFRESH_TOKEN_RDS_KEY, authCode)
-	cache.ScanDelete(accessTokenStoreKey)
-	cache.ScanDelete(refreshTokenStoreKey)
+	//accessTokenStoreKey := cache.GenKeyString(enum.ACCESS_TOKEN_RDS_KEY, authCode)
+	//refreshTokenStoreKey := cache.GenKeyString(enum.REFRESH_TOKEN_RDS_KEY, authCode)
+	//cache.ScanDelete(accessTokenStoreKey)
+	//cache.ScanDelete(refreshTokenStoreKey)
 	sys.Logger().Debugf("[ExpireAccessToken] done.")
 }
