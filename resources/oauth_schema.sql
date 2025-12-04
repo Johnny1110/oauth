@@ -154,7 +154,7 @@ DROP TABLE IF EXISTS `oauth`.`account_scopes` ;
 CREATE TABLE IF NOT EXISTS `oauth`.`account_scopes` (
                                                         `account_id` INT NOT NULL,
                                                         `scope_id` INT NOT NULL,
-                                                        `enble` TINYINT(1) NOT NULL DEFAULT 1,
+                                                        `enable` TINYINT(1) NOT NULL DEFAULT 1,
     PRIMARY KEY (`account_id`, `scope_id`),
     INDEX `accs_scop_idx` (`scope_id` ASC) VISIBLE,
     CONSTRAINT `acc_accs`
@@ -182,6 +182,7 @@ CREATE TABLE IF NOT EXISTS `oauth`.`client` (
     `client_secret` VARCHAR(255) NOT NULL,
     `created_at` TIMESTAMP NOT NULL DEFAULT  CURRENT_TIMESTAMP,
     `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `enable` TINYINT(1) NOT NULL DEFAULT 1,
     PRIMARY KEY (`id`),
     UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
     UNIQUE INDEX `client_id_UNIQUE` (`client_id` ASC) VISIBLE)
@@ -277,3 +278,43 @@ CREATE TABLE IF NOT EXISTS `oauth`.`system_settings` (
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
+
+DROP TABLE IF EXISTS `oauth`.`client_roles` ;
+-- 建立 client_roles 表
+CREATE TABLE oauth.client_roles (
+                                    id INT AUTO_INCREMENT PRIMARY KEY,
+                                    client_id INT NOT NULL,
+                                    role_id INT NOT NULL,
+                                    enable TINYINT(1) NOT NULL DEFAULT 1,
+                                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    -- 複合唯一索引，防止重複的 client-role 配對
+                                    UNIQUE KEY uk_client_role (client_id, role_id),
+
+    -- 索引優化查詢效能
+                                    INDEX idx_client_id (client_id),
+                                    INDEX idx_role_id (role_id),
+                                    INDEX idx_enable (enable)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+DROP TABLE IF EXISTS `oauth`.`client_scopes` ;
+-- 建立 client_scopes 表
+CREATE TABLE oauth.client_scopes (
+                                     id INT AUTO_INCREMENT PRIMARY KEY,
+                                     client_id INT NOT NULL,
+                                     scope_id INT NOT NULL,
+                                     enable TINYINT(1) NOT NULL DEFAULT 1,
+                                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    -- 複合唯一索引，防止重複的 client-scope 配對
+                                     UNIQUE KEY uk_client_scope (client_id, scope_id),
+
+    -- 索引優化查詢效能
+                                     INDEX idx_client_id (client_id),
+                                     INDEX idx_scope_id (scope_id),
+                                     INDEX idx_enable (enable)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

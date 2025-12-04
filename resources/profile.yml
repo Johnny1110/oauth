@@ -1,1 +1,1 @@
-profile: prod #[local, prod]
+profile: local #[local, prod]

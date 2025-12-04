@@ -1,11 +1,11 @@
 port: 5000
 
 db:
-  connection-string: basemall?parseTime=true&charset=utf8mb4,utf8
+  connection-string: oauth?parseTime=true&charset=utf8mb4,utf8
   ip: 127.0.0.1
   port: 3306
   username: root
-  password: Jarvan1110
+  password: root
   max-connection: 10
   max-idle-connection: 5
   max-connection-lifetime: 3 # mins
